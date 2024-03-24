@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func taskServer struct {
+type taskServer struct {
 	store *taskstore.TaskStore
 }
 
@@ -30,7 +30,7 @@ func (ts *taskServer) deleteAllTasksHandler(c *gin.Context){
 	ts.store.DeleteAllTasks()
 }
 
-func (ts *taskServer) createTasksHandler(c *gin.Context){
+func (ts *taskServer) createTaskHandler(c *gin.Context){
 	type RequestTask struct{
 		Text string `json:"text"`
 		Tags []string `json:"tags"`
@@ -39,7 +39,7 @@ func (ts *taskServer) createTasksHandler(c *gin.Context){
 
 	var rt RequestTask
 	if err := c.ShouldBindJSON(&rt); err != nil{
-		c.String(http.StatusBadRequest , err.Erorr())
+		c.String(http.StatusBadRequest , err.Error())
 		return
 	}
 
@@ -115,7 +115,7 @@ func main(){
 
 	router.POST("/task/", server.createTaskHandler)
 	router.GET("/task", server.getAllTasksHandler)
-	router.Delete("/task/", server.deleteAllTasksHandler)
+	router.DELETE("/task/", server.deleteAllTasksHandler)
 	router.GET("/task/:id", server.getTaskHandler)
 	router.DELETE("/task/:id", server.deleteTaskHandler)
 	router.GET("/tag/:tag", server.tagHandler)
